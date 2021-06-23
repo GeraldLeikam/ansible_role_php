@@ -54,3 +54,37 @@
   loop: "{{ php_conf_paths }}"
   notify:
     - php_webserver_restart
+
+- block:
+    - name: Check for existing APCu config files
+      find:
+        paths: "{{ item }}"
+        contains: 'extension(\s+)?=(\s+)?apc[u]?\.so'
+      register: php_installed_apc_confs
+      loop: "{{ php_extension_conf_paths }}"
+
+    - name: Remove any non-role-supplied APCu config files
+      file:
+        path: "{{ item.1.path }}"
+        state: absent
+      when: php_apc_conf_filename != (item.1.path.split('/') | last)
+      loop: "{{ php_installed_apc_confs.results | subelements('files') }}"
+      loop_control:
+        label: "{{ item.1.path }}"
+      notify:
+        - php_webserver_restart
+
+    - name: Ensure APCu config file is present
+      template:
+        src: apc.ini.j2
+        dest: "{{ item }}/{{ php_apc_conf_filename }}"
+        owner: root
+        group: root
+        force: yes
+        mode: 0644
+      loop: "{{ php_extension_conf_paths }}"
+      loop_control:
+        label: "{{ item }}/{{ php_apc_conf_filename }}"
+      notify:
+        - php_webserver_restart
+  when: php_apc_enabled | bool
