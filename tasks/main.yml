@@ -14,3 +14,24 @@
   loop: "{{ php_packages }}"
   notify:
     - php_webserver_restart
+
+- name: Install PECL libaries
+  shell: "yes '' | {{ php_pecl_executable }} install {{ item }}"
+  loop: "{{ php_pecl_modules }}"
+  register: pecl_result
+  changed_when: "pecl_result.rc == 0"
+  failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
+
+- name: Enable modules installed with pecl
+  template:
+    src: mod.ini.j2
+    dest: "{{ item.0 }}/{{ item.1 }}.ini"
+    owner: root
+    group: root
+    force: yes
+    mode: 0644
+  loop: "{{ php_extension_conf_paths | zip(php_pecl_modules_enabled) | list }}"
+  loop_control:
+    label: "{{ item.0 }}/{{ item.1 }}.ini"
+  notify:
+    - php_webserver_restart
