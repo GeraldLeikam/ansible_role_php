@@ -32,3 +32,5 @@ php_pecl_modules: []
 php_extension_conf_paths:
   - /etc/php/{{ php_default_version }}/apache2/conf.d
   - /etc/php/{{ php_default_version }}/cli/conf.d
+
+php_pecl_modules_enabled: []
