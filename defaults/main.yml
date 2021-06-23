@@ -87,3 +87,6 @@ php_session_save_path: ""
 php_error_reporting: "E_ALL & ~E_DEPRECATED & ~E_STRICT"
 php_display_errors: "Off"
 php_display_startup_errors: "Off"
+
+php_apc_conf_filename: 20-apcu.ini
+php_opcache_conf_filename: 10-opcache.ini
