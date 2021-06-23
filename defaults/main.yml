@@ -25,3 +25,4 @@ php_packages:
   - php-pear
 
 php_webserver_enabled: True
+php_webserver_daemon: "apache2"
