@@ -1,0 +1,7 @@
+---
+- name: Restart webserver
+  service:
+    name: "{{ php_webserver_daemon }}"
+    state: restarted
+  listen: php_webserver_restart
+  when: php_webserver_enabled | bool
