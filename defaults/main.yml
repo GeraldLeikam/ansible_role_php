@@ -91,3 +91,5 @@ php_display_startup_errors: "Off"
 
 php_apc_conf_filename: 20-apcu.ini
 php_opcache_conf_filename: 10-opcache.ini
+
+php_opcache_zend_extension: "opcache.so"
