@@ -88,3 +88,14 @@
       notify:
         - php_webserver_restart
   when: php_apc_enabled | bool
+
+- name: Remove APCu config file if APC is disabled
+  file:
+    path: "{{ item }}/{{ php_apc_conf_filename }}"
+    state: absent
+  loop: "{{ php_extension_conf_paths }}"
+  loop_control:
+    label: "{{ item }}/{{ php_apc_conf_filename }}"
+  when: not php_apc_enabled | bool
+  notify:
+    - php_webserver_restart
